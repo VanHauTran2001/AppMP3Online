@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activity.MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/teal_700">
+            <EditText
+                android:id="@+id/edt_Search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_weight="9"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/search_bg"
+                android:drawableLeft="@drawable/ic_seacrch"
+                android:drawablePadding="8dp"
+                android:ems="10"
+                android:hint="Tìm kiếm bài hát"
+                android:textColor="@color/white"
+                android:textColorHint="@color/white"
+                android:inputType="textPersonName"
+                android:layout_marginBottom="10dp"
+                android:padding="10dp" />
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_seacrch"
+                android:layout_gravity="center"
+                android:layout_marginRight="10dp"
+                android:id="@+id/imgSearch"/>
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/recylerBaiHat"
+            android:layout_margin="5dp"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="30dp"
+            android:text="Không có dữ liệu bài hát"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/teal_700"
+            android:id="@+id/txtThongbaoSearch"/>
+    </LinearLayout>
+</layout>
