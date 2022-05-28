@@ -1,22 +1,27 @@
 package com.example.appmp3online.Activity;
 
 import android.annotation.SuppressLint;
-import android.app.Service;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.StrictMode;
 import android.widget.SeekBar;
-import androidx.annotation.Nullable;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+
 import com.example.appmp3online.Model.BaiHat;
 import com.example.appmp3online.R;
+import com.example.appmp3online.Service.CreateNotification;
+import com.example.appmp3online.Service.OnClearFormRecentService;
 import com.example.appmp3online.databinding.ActivityPlayNhacBinding;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,11 +33,13 @@ public class PlayNhacActivity extends AppCompatActivity{
     private final ArrayList<BaiHat> baiHatArrayList = new ArrayList<>();
     private String title ="";
     private static MediaPlayer mediaPlayer;
-    private int position =-1;
+    private int position =0;
     private boolean repeat = false;
     private boolean checkrandum = false;
     private boolean next = false;
-    private Intent intent;
+    private BaiHat baiHat = new BaiHat();
+    private NotificationManager notificationManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +51,24 @@ public class PlayNhacActivity extends AppCompatActivity{
         getDataIntent();
         customToolbar();
         evenClick();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+             createChannel();
+             startService(new Intent(getApplicationContext(), OnClearFormRecentService.class));
+        }
 
     }
 
-    private void evenClick() {
-        binding.imgPlay.setOnClickListener(view -> {
-            if (mediaPlayer !=null){
-                if (mediaPlayer.isPlaying()){
-                    mediaPlayer.pause();
-                    binding.imgPlay.setImageResource(R.drawable.iconplay);
-                }else {
-                    mediaPlayer.start();
-                    binding.imgPlay.setImageResource(R.drawable.ic_pause);
-                }
+    private void createChannel() {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            NotificationChannel channel = new NotificationChannel(CreateNotification.CHANNEL_ID,"Zing MP3", NotificationManager.IMPORTANCE_LOW);
+            notificationManager = getSystemService(NotificationManager.class);
+            if(notificationManager !=null){
+                 notificationManager.createNotificationChannel(channel);
             }
-        });
+        }
+    }
+
+    private void evenClick() {
         binding.imgRepeat.setOnClickListener(v -> {
             if (!repeat){
                 if (checkrandum){
@@ -98,6 +108,57 @@ public class PlayNhacActivity extends AppCompatActivity{
             public void onStopTrackingTouch(SeekBar seekBar) {
                 mediaPlayer.seekTo(binding.seekBarPlaynhac.getProgress());
             }
+        });
+        binding.imgPlay.setOnClickListener(view -> {
+            if (mediaPlayer !=null){
+                if (mediaPlayer.isPlaying()){
+                    mediaPlayer.pause();
+                    binding.imgPlay.setImageResource(R.drawable.iconplay);
+                }else {
+                    mediaPlayer.start();
+                    binding.imgPlay.setImageResource(R.drawable.ic_pause);
+                    //Create Notification
+                    CreateNotification.createNotification(PlayNhacActivity.this,baiHatArrayList.get(position),R.drawable.ic_pause,1,baiHatArrayList.size()-1);
+                }
+            }
+        });
+        binding.imgPreview.setOnClickListener(v -> {
+            if (baiHatArrayList.size()>0){
+                if (mediaPlayer.isPlaying() || mediaPlayer != null){
+                    mediaPlayer.stop();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
+                }
+                if (position < (baiHatArrayList.size())){
+                    binding.imgPlay.setImageResource(R.drawable.ic_pause);
+                    position--;
+                    if (position <0) {
+                        position = baiHatArrayList.size() - 1;
+                    }
+                    if (repeat){
+                        position += 1;
+                    }
+                    if (checkrandum){
+                        Random random = new Random();
+                        int index = random.nextInt(baiHatArrayList.size());
+                        if (index==position){
+                            position = index - 1;
+                        }
+                        position = index;
+                    }
+                    new PlayMP3().execute(baiHatArrayList.get(position).getLinkSong());
+                    Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatArrayList.get(position).getNameSong());
+                    updateTime();
+                }
+            }
+            binding.imgPreview.setEnabled(false);
+            binding.imgNext.setEnabled(false);
+            Handler handler1 = new Handler();
+            handler1.postDelayed(() -> {
+                binding.imgPreview.setEnabled(true);
+                binding.imgNext.setEnabled(true);
+            },5000);
+            CreateNotification.createNotification(PlayNhacActivity.this,baiHatArrayList.get(position),R.drawable.ic_pause,position,baiHatArrayList.size()-1);
         });
         binding.imgNext.setOnClickListener(v -> {
             if (baiHatArrayList.size()>0){
@@ -139,44 +200,7 @@ public class PlayNhacActivity extends AppCompatActivity{
                 binding.imgPreview.setEnabled(true);
                 binding.imgNext.setEnabled(true);
             },5000);
-        });
-
-        binding.imgPreview.setOnClickListener(v -> {
-            if (baiHatArrayList.size()>0){
-                if (mediaPlayer.isPlaying() || mediaPlayer != null){
-                    mediaPlayer.stop();
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                }
-                if (position < (baiHatArrayList.size())){
-                    binding.imgPlay.setImageResource(R.drawable.ic_pause);
-                    position--;
-                    if (position <0) {
-                        position = baiHatArrayList.size() - 1;
-                    }
-                    if (repeat){
-                        position += 1;
-                    }
-                    if (checkrandum){
-                        Random random = new Random();
-                        int index = random.nextInt(baiHatArrayList.size());
-                        if (index==position){
-                            position = index - 1;
-                        }
-                        position = index;
-                    }
-                    new PlayMP3().execute(baiHatArrayList.get(position).getLinkSong());
-                    Objects.requireNonNull(getSupportActionBar()).setTitle(baiHatArrayList.get(position).getNameSong());
-                    updateTime();
-                }
-            }
-            binding.imgPreview.setEnabled(false);
-            binding.imgNext.setEnabled(false);
-            Handler handler1 = new Handler();
-            handler1.postDelayed(() -> {
-                binding.imgPreview.setEnabled(true);
-                binding.imgNext.setEnabled(true);
-            },5000);
+            CreateNotification.createNotification(PlayNhacActivity.this,baiHatArrayList.get(position),R.drawable.ic_pause,position,baiHatArrayList.size()-1);
         });
     }
 
@@ -185,7 +209,7 @@ public class PlayNhacActivity extends AppCompatActivity{
         baiHatArrayList.clear();
         if (intent !=null){
             if (intent.hasExtra("playnhac")){
-                BaiHat baiHat = intent.getParcelableExtra("playnhac");
+                 baiHat = intent.getParcelableExtra("playnhac");
                 binding.txtTenBaiHatPlay.setText(baiHat.getNameSong());
                 binding.txtCaSiPlay.setText(baiHat.getNameSinger());
                 title = baiHat.getNameSong();
@@ -312,5 +336,13 @@ public class PlayNhacActivity extends AppCompatActivity{
         //tổng thời gian bài hát
         binding.txtTimeEnd.setText(simpleDateFormat.format(mediaPlayer.getDuration()));
         binding.seekBarPlaynhac.setMax(mediaPlayer.getDuration());
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            notificationManager.cancelAll();
+        }
     }
 }
