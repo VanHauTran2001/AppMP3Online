@@ -3,14 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Activity.MainActivity">
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:orientation="vertical"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:id="@+id/ln_toolbar"
             android:background="@color/teal_700">
             <EditText
                 android:id="@+id/edt_Search"
@@ -38,11 +38,28 @@
                 android:layout_marginRight="10dp"
                 android:id="@+id/imgSearch"/>
         </LinearLayout>
-        <androidx.recyclerview.widget.RecyclerView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/recylerBaiHat"
-            android:layout_margin="5dp"/>
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ln_toolbar">
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/swiperefresh"
+                android:visibility="gone"
+                android:layout_width="56dp"
+                android:layout_centerInParent="true"
+                android:layout_height="56dp">
+                <ProgressBar
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"/>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/recylerBaiHat"
+                android:layout_margin="5dp"/>
+        </RelativeLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -52,5 +69,5 @@
             android:visibility="gone"
             android:textColor="@color/teal_700"
             android:id="@+id/txtThongbaoSearch"/>
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

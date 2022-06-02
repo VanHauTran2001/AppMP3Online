@@ -1,42 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/imgBaiHat"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="3dp"
-        android:src="@drawable/iconfloatingactionbutton"
-        android:layout_marginEnd="3dp"
-        android:layout_marginBottom="3dp"
-        android:scaleType="fitXY" />
-    <TextView
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="7dp"
-        android:id="@+id/txtTenBaiHat"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:text="Ten bai hat"
-        android:textStyle="bold"
-        android:textColor="@color/black"
-        android:layout_toRightOf="@id/imgBaiHat"
-        android:textSize="23dp" />
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/txtTemCaSiBaiHat"
-        android:layout_marginTop="7dp"
-        android:layout_marginLeft="5dp"
-        android:layout_toRightOf="@id/imgBaiHat"
-        android:layout_below="@id/txtTenBaiHat"
-        android:maxLines="1"
-        android:textSize="18dp"
-        android:textColor="#4A4848"
-        android:text="Tran Van Hau"/>
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/imgBaiHat"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:src="@drawable/iconfloatingactionbutton"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:scaleType="fitXY" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="7dp"
+            android:id="@+id/txtTenBaiHat"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="Ten bai hat"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_toRightOf="@id/imgBaiHat"
+            android:textSize="23dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/txtTenCaSiBaiHat"
+            android:layout_marginTop="7dp"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/imgBaiHat"
+            android:layout_below="@id/txtTenBaiHat"
+            android:maxLines="1"
+            android:textSize="18dp"
+            android:textColor="#4A4848"
+            android:text="Tran Van Hau"/>
+    </RelativeLayout>
 
-</RelativeLayout>
+
+</layout>

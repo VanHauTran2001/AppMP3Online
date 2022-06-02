@@ -29,6 +29,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".Activity.MyBackgroupService"
+            android:enabled="true"
+            android:exported="true">
+
+        </service>
         <receiver android:name=".Service.NotificationActionService"/>
         <service android:name=".Service.OnClearFormRecentService"/>
     </application>
